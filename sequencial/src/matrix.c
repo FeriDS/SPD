@@ -1,3 +1,4 @@
+#include <bits/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +7,7 @@
 #define L_RANGE -10000
 #define H_RANGE 10000
 #define SIZE 2048
-
+#define TRIES 10
 
 
 int randomFA(double min, double max) {
@@ -111,31 +112,51 @@ void matrixMultiplication(double matrixA[][SIZE], double matrixB[][SIZE], double
 int main() 
 {
     srand(time(NULL));
+
     /*int size = 100;*/
     /*printRandom(size);*/
 
     /*filePrint("files/a.txt");*/
     
     //Generate a two files with a size x size random matrix in it.
-    /*printf("Generating Matrix A\n");*/
-    /*writeRandomMatrixInFile("files/matrixA.txt", SIZE);*/
-    /*printf("Generating Matrix B\n"); */
-    /*writeRandomMatrixInFile("files/matrixB.txt", SIZE);*/
-
-    double (*matrixA)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
-    readMatrixFromFile("files/matrixA.txt", matrixA, SIZE);
-
-    double (*matrixB)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
-    readMatrixFromFile("files/matrixB.txt", matrixB, SIZE);
+    printf("Generating Matrix A\n");
+    writeRandomMatrixInFile("files/matrixA.txt", SIZE);
+    printf("Generating Matrix B\n"); 
+    writeRandomMatrixInFile("files/matrixB.txt", SIZE);
+    struct timespec inicio, fim;
+    double oneTimeRun;
+    double totalTimeRunned = 0;
 
     double (*matrixC)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
-    matrixMultiplication(matrixA, matrixB, matrixC);
+    double (*matrixB)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
+    double (*matrixA)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
+    for(int i = 0; i < TRIES + 1; i++) {
 
-    printf("Writing Matrix C in file\n");
-    writeMatrixInFile("files/matrixC.txt", matrixC);
+        clock_gettime(CLOCK_MONOTONIC, &inicio);
+        /*printf("Reading Matrix A\n");*/
+        readMatrixFromFile("files/matrixA.txt", matrixA, SIZE);
 
+        /*printf("Reading Matrix B\n");*/
+        readMatrixFromFile("files/matrixB.txt", matrixB, SIZE);
+
+        /*printf("Multipling matrix A with matrix B\n");*/
+        matrixMultiplication(matrixA, matrixB, matrixC);
+
+        /*printf("Writing Matrix C in file\n");*/
+        writeMatrixInFile("files/matrixC.txt", matrixC);
+        clock_gettime(CLOCK_MONOTONIC, &fim);
+
+        if(i == 0)
+            continue;
+        oneTimeRun = (fim.tv_sec - inicio.tv_sec) + (fim.tv_nsec - inicio.tv_nsec) / 1e9;
+        printf("Time spent during on number %d run: %lfs\n", i , oneTimeRun);
+        totalTimeRunned += oneTimeRun;
+    }
+    printf("Time spent in total: %lfs\n", totalTimeRunned);
+    printf("Average time spent per run: %lfs\n", (double)totalTimeRunned / TRIES);
     free(matrixA);
     free(matrixB);
     free(matrixC);
+
     return 0;
 }
