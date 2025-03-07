@@ -9,39 +9,6 @@
 #define SIZE 2048
 #define TRIES 10
 
-
-int randomFA(double min, double max) {
-    return rand() * (max - min) / (double)RAND_MAX + min;
-}
-
-
-double randomF(double min, double max) {
-    return (double)rand() * (max - min) / (double)RAND_MAX + min;
-}
-
-void printRandom(int size) {
-    for (int i = 0; i < size; i++) {
-        printf("%f , ", randomF(L_RANGE, H_RANGE));
-    }
-}
-
-void writeRandomMatrixInFile(char* filePath, int size) {
-    FILE *fp;
-    fp = fopen(filePath, "w");
-    if (fp == NULL) {
-        perror("Error Opening Sad");
-    } 
-    /*char *str[100];*/
-    fprintf(fp, "%d\n", size);
-    for(int i = 0; i < size; i++) {
-        for(int j = 0; j < size; j++)
-            fprintf(fp, "%lf ", randomF(L_RANGE, H_RANGE));
-        fprintf(fp, "\n");
-    }
-    fclose(fp);
-}
-
-
 void writeMatrixInFile(char* filePath, double matrix[][SIZE]) {
     FILE *fp;
     fp = fopen(filePath, "w");
@@ -119,10 +86,6 @@ int main()
     /*filePrint("files/a.txt");*/
     
     //Generate a two files with a size x size random matrix in it.
-    printf("Generating Matrix A\n");
-    writeRandomMatrixInFile("files/matrixA.txt", SIZE);
-    printf("Generating Matrix B\n"); 
-    writeRandomMatrixInFile("files/matrixB.txt", SIZE);
     struct timespec inicio, fim;
     double oneTimeRun;
     double totalTimeRunned = 0;
