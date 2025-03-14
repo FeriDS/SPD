@@ -6,7 +6,7 @@
 
 #define L_RANGE -10000
 #define H_RANGE 10000
-#define SIZE 2048
+#define SIZE 1024
 #define TRIES 10
 
 double randomF(double min, double max) {

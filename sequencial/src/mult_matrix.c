@@ -1,4 +1,3 @@
-#include <bits/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +5,7 @@
 
 #define L_RANGE -10000
 #define H_RANGE 10000
-#define SIZE 2048
+#define SIZE 1024
 #define TRIES 10
 
 void writeMatrixInFile(char* filePath, double matrix[][SIZE]) {
@@ -90,6 +89,19 @@ int main()
     double oneTimeRun;
     double totalTimeRunned = 0;
 
+    char filePath[20];
+    char numStr[5];
+    sprintf(numStr, "%d", SIZE);
+    filePath[0] = 0;
+    strcat(filePath, "files/time");
+    strcat(filePath, numStr);
+    strcat(filePath, ".txt");
+    /*printf("%s\n", filePath);*/
+
+
+    FILE *fp;
+    fp = fopen(filePath, "wr");
+
     double (*matrixC)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
     double (*matrixB)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
     double (*matrixA)[SIZE] = malloc(sizeof(double[SIZE][SIZE]));
@@ -113,10 +125,13 @@ int main()
             continue;
         oneTimeRun = (fim.tv_sec - inicio.tv_sec) + (fim.tv_nsec - inicio.tv_nsec) / 1e9;
         printf("Time spent during on number %d run: %lfs\n", i , oneTimeRun);
+        fprintf(fp, "Run %d: %lfs\n", i, oneTimeRun);
         totalTimeRunned += oneTimeRun;
     }
     printf("Time spent in total: %lfs\n", totalTimeRunned);
     printf("Average time spent per run: %lfs\n", (double)totalTimeRunned / TRIES);
+    fprintf(fp, "Time spent in total: %lfs\n", totalTimeRunned);
+    fprintf(fp, "Average time spent per run: %lfs\n", (double)totalTimeRunned / TRIES);
     free(matrixA);
     free(matrixB);
     free(matrixC);
